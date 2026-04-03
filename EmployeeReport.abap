@@ -34,6 +34,8 @@ DATA: gv_empno      TYPE y180m_empmst-empno,
       gt_fieldcat   TYPE slis_t_fieldcat_alv,
       gt_fieldcat_1 TYPE slis_t_fieldcat_alv.
 
+DATA: gv_total_salary TYPE y180m_salmst-salary.
+
 DATA: gt_mtdatt     TYPE y180t_mtdatt,
       gt_saltrn     TYPE y180t_saltrn,
       gt_mtdatt_res TYPE y180t_mtdatt,
@@ -46,15 +48,15 @@ DATA: gv_user_command TYPE slis_formname VALUE 'USER_COMMAND'. "This is use for 
 
 
 AT SELECTION-SCREEN.
-  IF s_empno-low IS INITIAL OR s_empno-high IS INITIAL.
-    MESSAGE ID 'Y180' TYPE 'E' NUMBER '014'.
-  ENDIF.
+*  IF s_empno-low IS INITIAL OR s_empno-high IS  INITIAL.
+*    MESSAGE ID 'Y180' TYPE 'E' NUMBER '014'.
+*  ENDIF.  "here i do comment for if i want to show particular employee total salary if uncomment then we need to enter both input field.
   IF p_month IS INITIAL.
     MESSAGE ID 'Y180' TYPE 'E' NUMBER '015'.
   ENDIF.
-  IF s_empno-high < s_empno-low.
-    MESSAGE ID 'Y180' TYPE 'E' NUMBER '016'.
-  ENDIF.
+*  IF s_empno-high < s_empno-low.
+*    MESSAGE ID 'Y180' TYPE 'E' NUMBER '016'.
+*  ENDIF.
 
 START-OF-SELECTION.
   PERFORM get_data_att USING gs_mtdatt_res. "done
@@ -280,7 +282,7 @@ FORM process_data_sal .
       APPEND gs_saltrn_res TO gt_saltrn_res.
 
       CLEAR gs_saltrn_res.
-
+      gv_total_salary = lv_total - lv_pf.
     ENDAT.
 
   ENDLOOP.
@@ -466,9 +468,22 @@ FORM top_of_page_2.
   APPEND ls_header TO lt_header.
   CLEAR ls_header.
 
+  CLEAR ls_header.
+  ls_header-typ  = 'S'.
+  ls_header-key  = 'Employee Total Salary:'.
+  ls_header-info = gv_total_salary.
+  APPEND ls_header TO lt_header.
+
+  CLEAR ls_header.
+  ls_header-typ  = 'S'.
+  ls_header-key  = 'Date of Generation:'.
+  ls_header-info = sy-datum.
+  APPEND ls_header TO lt_header.
+
   CALL FUNCTION 'REUSE_ALV_COMMENTARY_WRITE'
     EXPORTING
-      it_list_commentary = lt_header.
+      it_list_commentary = lt_header
+      i_logo             = 'HR3PRNA_RECON_LOGO'.
 ENDFORM.
 
 *&---------------------------------------------------------------------*
@@ -484,14 +499,34 @@ FORM top_of_page_1.
         ls_header TYPE slis_listheader.
 
   CLEAR ls_header.
-  ls_header-typ = 'H'.
+  ls_header-typ  = 'H'.
   ls_header-info = 'Attendance Details of Employee.....!'.
   APPEND ls_header TO lt_header.
+
   CLEAR ls_header.
+  ls_header-typ  = 'S'.
+  ls_header-key  = 'Employee No From:'.
+  ls_header-info = s_empno-low.
+  APPEND ls_header TO lt_header.
+
+  CLEAR ls_header.
+  ls_header-typ  = 'S'.
+  ls_header-key  = 'Employee No To:'.
+  ls_header-info = s_empno-high.
+  APPEND ls_header TO lt_header.
+
+  CLEAR ls_header.
+  ls_header-typ  = 'S'.
+  ls_header-key  = 'Date of Generation:'.
+  ls_header-info = sy-datum.
+  APPEND ls_header TO lt_header.
 
   CALL FUNCTION 'REUSE_ALV_COMMENTARY_WRITE'
     EXPORTING
-      it_list_commentary = lt_header.
+      it_list_commentary = lt_header
+      i_logo             = 'HR3PRNA_RECON_LOGO'.
+
+
 ENDFORM.
 
 
@@ -638,6 +673,7 @@ FORM fill_catalog_emp  USING   uv_itab_field_name
 
 
 ENDFORM.
+
 
 *&---------------------------------------------------------------------*
 *& Form call_alv_empsal
