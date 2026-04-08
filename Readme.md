@@ -136,9 +136,11 @@ PF = Basic Salary * 12%
   - Employee Total Salary
   - Date of generation
 - Clean and structured output
+## Employee Attendances
 <img width="1474" height="409" alt="image" src="https://github.com/user-attachments/assets/349a378d-59c5-4497-b7c3-dce61af97707" />
 <img width="1273" height="124" alt="image" src="https://github.com/user-attachments/assets/9fba3f80-1ebd-475e-97d3-90d3b58c832f" />
-- Salary output
+
+## Salary output
   <img width="1502" height="313" alt="image" src="https://github.com/user-attachments/assets/b6fb3e34-ec0b-45f6-a620-ee6c0bb3cd64" />
 ---
 
